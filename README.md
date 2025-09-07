@@ -43,7 +43,14 @@ Chạy file chính của dự án bằng lệnh sau:
 ```
 
 2. Truy cập giao diện người dùng:
-Sau khi ứng dụng đã chạy, mở file ui/index.html bằng bất kỳ trình duyệt web nào để bắt đầu sử dụng.
+   
+   - Sau khi ứng dụng đã chạy, mở file ui/index.html bằng bất kỳ trình duyệt web nào để bắt đầu sử dụng.
+
+3. Thiết lập host TTS model trên colab (optional):
+   
+   - Chạy notebook/StyleTTS2_lite_vi_(2s).ipynb trên Google Colab, dán link Ngrok thu được ở cuối file vào EXTERNAL_TTS_URL trong main.py.
+
+   - App vẫn sẽ có tính năng giọng nói, nhưng khi chạy phần này sẽ có tùy chọn giọng nói đa dạng và chất lượng tốt hơn.
 
 ### 4. Lưu ý quan trọng
 
@@ -377,6 +384,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
