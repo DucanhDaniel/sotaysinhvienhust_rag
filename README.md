@@ -317,7 +317,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     
     ```
 
-  * Body: Một mảng các đối tượng, mỗi đối tượng đại diện cho một hoạt động.
+  * Example:
 
     ```
       [
@@ -377,5 +377,6 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
