@@ -55,7 +55,9 @@ Sau khi ứng dụng đã chạy, mở file ui/index.html bằng bất kỳ trì
 
 # Tài liệu API
 
-Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồm mô tả, tham số và định dạng phản hồi.
+Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồm mô tả, tham số và định dạng phản hồi. 
+
+**Tất cả dữ liệu học bổng, việc làm đều được lấy từ trang CTSV của Đại học Bách khoa Hà Nội.**
 
 ### 1. Endpoint: /ask
 
@@ -157,6 +159,24 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     ]
     
     ```
+    
+  * Example: 
+
+    ```
+    [
+        {
+          "DocumentId": 175,
+          "Title": "Học bổng Goertek Việt Nam năm học 2025-2026",
+          "Deadline": "2025-08-27 23:55:00",
+          "TotalPrice": "Lên tới 60.000.000",
+          "Description": "Học bổng tài trợ",
+          "Content": "<p>Goertek..."
+       },
+       ...
+
+    ]
+    
+    ```
 
 ### 4. Endpoint: /jobs
 
@@ -193,6 +213,29 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
         "majors_required": "string",
         "positions_available": "int",
         "description": "string"
+      },
+      ...
+    ]
+    
+    ```
+
+  * Example
+
+    ```
+      [
+        {
+          "document_id": 3787,
+          "source_link": "https://ctsv.hust.edu.vn/#/doanh-nghiep/chi-tiet-bai-dang/3787",
+          "title": "KỸ SƯ TỰ ĐỘNG HÓA/ QUẢN LÝ DỰ ÁN PM",
+          "company_name": "CÔNG TY TNHH CÔNG NGHIỆP CHÍNH XÁC BOZHON VIỆT NAM",
+          "salary": "Theo thỏa thuận",
+          "deadline": "2025-09-30 00:00:00",
+          "location": "Bắc Giang,Bắc Ninh,Nam Định,Phú Thọ,Vĩnh Phúc",
+          "work_type": "Toàn thời gian cố định",
+          "experience_required": "Không yêu cầu",
+          "majors_required": "Điện tử viễn thông,Kỹ thuật cơ khí,Kỹ thuật cơ điện tử,Kỹ thuật điện - điện tử",
+          "positions_available": 40,
+          "description": "<ol>\n<li><strong>KỸ SƯ THIẾT KẾ MÁY TỰ ĐỘNG HÓA..."
       },
       ...
     ]
@@ -274,6 +317,23 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     
     ```
 
+  * Body: Một mảng các đối tượng, mỗi đối tượng đại diện cho một hoạt động.
+
+    ```
+      [
+        {
+          "id": 14515,
+          "title": "Tuần định hướng của sinh viên K70",
+          "organizer": "Ban CTSV",
+          "activity_type": "Giáo dục Chính trị & Tư tưởng",
+          "start_time": "2025-09-08 07:30:00",
+          "image_url": "https://ctsv.hust.edu.vn/UploadFile/CTSV/DownloadImageAcitivity?AId=14515"
+      },
+      ...
+    ]
+    
+    ```
+
 ### 8. Endpoint: /activities/{activity_id}
 
 * **Mô tả**: Lấy thông tin chi tiết của một hoạt động cụ thể dựa trên ID.
@@ -301,32 +361,21 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     
     ```
 
-
-* **Mô tả**: Lấy thông tin chi tiết của một hoạt động cụ thể dựa trên ID.
-
-* **Phương thức**: `GET`
-
-* **Yêu cầu (Request Parameters)**:
-
-  * `activity_id` (bắt buộc): ID của hoạt động cần xem chi tiết.
-
-* **Phản hồi (Response Body)**:
-
-  * Kiểu dữ liệu: `application/json`
-
-  * Body: Một đối tượng chứa thông tin chi tiết của hoạt động.
+  * Example:
 
     ```
-    {
-      "id": "int",
-      "title": "string",
-      "organizer": "string",
-      "activity_type": "string",
-      "start_time": "string",
-      "image_url": "string",
-      "finish_time": "string",
-      "location": "string",
-      "description": "string"
+      {
+        "id": 14515,
+        "title": "Tuần định hướng của sinh viên K70",
+        "organizer": "Ban CTSV",
+        "activity_type": "Giáo dục Chính trị & Tư tưởng",
+        "start_time": "2025-09-08 07:30:00",
+        "image_url": "https://ctsv.hust.edu.vn/UploadFile/CTSV/DownloadImageAcitivity?AId=14515",
+        "finish_time": "2025-09-12 17:00:00",
+        "location": "Hội trường C2",
+        "description": "<p style=\"text-align: justify;\">heo Quy chế của Bộ GĐ&amp;ĐT..."
     }
     
     ```
+
+
