@@ -18,3 +18,4 @@ requests
 pinecone
 gtts
 langchain-core
+langchain-tavily

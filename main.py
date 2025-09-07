@@ -50,7 +50,7 @@ class TTSRequest(BaseModel):
     text: str
     speaker_id : int = 1
 
-EXTERNAL_TTS_URL = "https://9721771d4d78.ngrok-free.app"
+EXTERNAL_TTS_URL = "https://bff88f795a6b.ngrok-free.app"
 @app.post("/tts", summary="Tổng hợp văn bản thành giọng nói với logic ưu tiên")
 async def text_to_speech(request: TTSRequest):
     """
