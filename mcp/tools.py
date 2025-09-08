@@ -1,4 +1,5 @@
 from .scholarship import *
+from langchain_community.document_loaders import WebBaseLoader
 
 import os
 from datetime import datetime, timedelta
@@ -6,10 +7,13 @@ from typing import List, Optional
 import calendar
 from typing import Dict, List
 from langchain_core.tools import tool
-from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_community.document_loaders import WebBaseLoader
+# from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
+from serpapi import SerpApiClient
+
 from pinecone import Pinecone
 from dotenv import load_dotenv
+
 load_dotenv()
 
 
@@ -24,7 +28,7 @@ index_name = "sotayhust"
 index = pc.Index(index_name)
 
 #Thiết lập tool search web tavily
-tavily_tool = TavilySearchResults(max_results=5)
+tavily_tool = TavilySearch(max_results=5)
 
 def get_similar_doc(text, namespace, topk = 5):
     results = index.search(
@@ -103,36 +107,71 @@ def search_law_vietnam(query: str) -> List[str]:
     print(f"---TOOL: search_law_vietnam (namespace: LawVN) | Query: {query}---")
     return get_similar_doc(query, namespace="LawVN")
 
-@tool
-def search_website(query: str) -> List[str]:
+# @tool
+def search_website(query: str, num_results: int = 2): # Tăng num_results mặc định lên 3
     """
-    Sử dụng Tavily API để tìm kiếm website liên quan đến query,
-    sau đó scrape nội dung các website đó và trả về danh sách đoạn văn bản.
-    Hữu ích cho các câu hỏi cần thông tin mới, thời sự hoặc không có trong cơ sở dữ liệu.
+    Thực hiện tìm kiếm Google, lọc bỏ domain không mong muốn, 
+    sau đó scrape nội dung từ các kết quả hợp lệ.
     """
-    print(f"---TOOL: search_website | Query: {query}---")
+    api_key = os.getenv("SERPAPI_KEY")
+    if not api_key:
+        raise ValueError("Vui lòng đặt SERPAPI_KEY trong biến môi trường của bạn.")
+
+    # === BƯỚC 1: TÌM URL BẰNG SERPAPI ===
+    print(f"Đang tìm kiếm các trang web liên quan cho: '{query}'...")
+    params = {
+        "api_key": api_key,
+        "engine": "google",
+        "q": query,
+        "gl": "vn",
+        "hl": "vi",
+    }
+    try:
+        client = SerpApiClient(params)
+        results = client.get_dict()
+        
+        if "organic_results" not in results:
+            print("Không tìm thấy kết quả tự nhiên.")
+            return
+
+        # === LOGIC LỌC ĐÃ ĐƯỢC THÊM VÀO ĐÂY ===
+        print("Đang lọc kết quả, loại bỏ các trang từ 'hust.edu.vn'...")
+        
+        # 1. Lấy toàn bộ danh sách kết quả
+        all_organic_results = results["organic_results"]
+        
+        # 2. Tạo một danh sách link mới, chỉ chứa các link KHÔNG thuộc hust.edu.vn
+        filtered_links = [
+            result["link"] 
+            for result in all_organic_results 
+            if "hust.edu.vn" not in result["link"]
+        ]
+        
+        # 3. Lấy số lượng link mong muốn từ danh sách đã lọc
+        urls_to_scrape = filtered_links[:num_results]
+        
+        if not urls_to_scrape:
+            print("Không tìm thấy link nào phù hợp sau khi đã lọc.")
+            return
+            
+        print(f"Đã tìm thấy {len(urls_to_scrape)} link phù hợp để lấy dữ liệu.")
+        
+    except Exception as e:
+        print(f"Lỗi khi gọi SerpApi: {e}")
+        return
+
+    # === BƯỚC 2: SCRAPE NỘI DUNG TỪ CÁC URL ĐÃ LỌC ===
+    print("\nBắt đầu quá trình lấy nội dung chi tiết từ các trang web...")
+    full_context = ""
+    for i, url in enumerate(urls_to_scrape):
+        print(f"Đang xử lý link {i+1}/{len(urls_to_scrape)}")
+        content = scrape_content_from_url(url)
+        if content:
+            full_context += f"--- Nguồn {i+1} (từ {url}) ---\n"
+            full_context += content + "\n\n"
     
-    # 1. Tìm kiếm URL liên quan bằng Tavily
-    try:
-        results = tavily_tool.invoke({"query": query})
-        urls = [item["url"] for item in results if "url" in item]
-    except Exception as e:
-        print(f"Lỗi khi gọi Tavily: {e}")
-        return [f"Lỗi khi tìm kiếm với Tavily: {e}"]
-
-    if not urls:
-        return ["Không tìm thấy website nào liên quan."]
-
-    # 2. Scrape nội dung từ các URL
-    try:
-        loader = WebBaseLoader(urls)
-        docs = loader.load()
-        list_doc = [doc.page_content for doc in docs if doc.page_content.strip()]
-        return list_doc
-    except Exception as e:
-        print(f"Lỗi khi scrape website: {e}")
-        return [f"Lỗi khi scrape website: {e}"]
-
+    print("--- Hoàn thành việc lấy dữ liệu thô! ---")
+    return full_context
 @tool
 def get_scholarships(
     time_period: str = "upcoming", status: str = "all"
@@ -210,5 +249,92 @@ def get_scholarships(
 
     return filtered_list
 
+
+def clean_website_text(text: str) -> str:
+    """
+    Làm sạch văn bản từ trang Wikipedia để chuẩn bị cho RAG.
+    
+    Args:
+        text (str): Văn bản thô từ Wikipedia.
+        
+    Returns:
+        str: Văn bản đã được làm sạch.
+    """
+    # 1. Loại bỏ các phần không cần thiết
+    # Loại bỏ nội dung trong ngoặc vuông (như chú thích [1], [a])
+    text = re.sub(r'\[.*?\]', '', text)
+    # Loại bỏ các đoạn văn bản trong ngoặc đơn sau khi đã xóa chú thích,
+    # ví dụ: (tiếng Anh: Hanoi University of Science and Technology, HUST)
+    text = re.sub(r'\s*\([^)]*\)', '', text)
+    # Loại bỏ các ký tự điều khiển định dạng, ví dụ: \n, \t, \xa0
+    text = text.replace('\n', ' ').replace('\t', ' ').replace('\xa0', ' ')
+    
+    # 2. Loại bỏ các menu, thanh điều hướng, và các phần giao diện trang web
+    # Các từ khóa thường xuất hiện ở thanh điều hướng
+    keywords_to_remove = [
+        'Bước tới nội dung', 'Trình đơn chính', 'chuyển sang thanh bên', 'ẩn',
+        'Điều hướng', 'Trang Chính', 'Nội dung chọn lọc', 'Bài viết ngẫu nhiên',
+        'Thay đổi gần đây', 'Báo lỗi nội dung', 'Tương tác', 'Hướng dẫn',
+        'Giới thiệu Wikipedia', 'Cộng đồng', 'Thảo luận chung', 'Giúp sử dụng',
+        'Liên lạc', 'Tải lên tập tin', 'Tìm kiếm', 'Giao diện', 'Quyên góp',
+        'Tạo tài khoản', 'Đăng nhập', 'Công cụ cá nhân', 'Nội dung', 'Đầu',
+        'Hiện/ẩn mục', 'sửa', 'sửa mã nguồn', 'Bách khoa toàn thư mở Wikipedia',
+        'Đóng mở mục lục', 'Tất cả bài viết cần được wiki hóa',
+        'Lỗi CS1: tên chung', 'Bài có liên kết hỏng', 'Trang thiếu chú thích trong bài',
+        'Xem thêm', 'Chú thích', 'Ghi chú', 'Tham khảo', 'Liên kết ngoài',
+        'Tiêu đề chuẩn', 'Lấy từ', 'Trang này được sửa đổi lần cuối',
+        'Văn bản được phát hành theo Giấy phép', 'Chính sách quyền riêng tư',
+        'Giới thiệu Wikipedia', 'Lời phủ nhận', 'Lập trình viên',
+        'Thống kê', 'Tuyên bố về cookie', 'Phiên bản di động',
+        'Bài viết', 'Thảo luận', 'Tiếng Việt', 'Đọc', 'Sửa đổi', 'Xem lịch sử',
+        'Công cụ', 'Tác vụ', 'Chung', 'Các liên kết đến đây',
+        'Thay đổi liên quan', 'Liên kết thường trực', 'Thông tin trang',
+        'Trích dẫn trang này', 'Tạo URL rút gọn', 'Tải mã QR',
+        'In và xuất', 'Tạo một quyển sách', 'Tải dưới dạng PDF', 'Bản để in ra',
+        'Tại dự án khác', 'Wikimedia Commons', 'Khoản mục Wikidata',
+        'Thứ tự', 'Hệ đại học', 'Hệ sau đại học'
+    ]
+    
+    for keyword in keywords_to_remove:
+        text = text.replace(keyword, ' ')
+        
+    # 3. Xử lý các đoạn văn bản dài và thừa
+    text = re.sub(r'Đại học Bách khoa Hà Nội.*?(?=Lịch sử)', ' ', text)
+    # Loại bỏ các danh sách dạng bảng
+    text = re.sub(r'Thứ tự.*?Giám đốc', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'Hiệu trưởng.*?Tạ Quang Bửu', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'Đối tượng khen thưởng.*?Lao động', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'Thứ tự.*?(?=Nhà trường)', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'Trường, khoa, viện đào tạo.*?Khoa đại cương', ' ', text, flags=re.DOTALL)
+    text = re.sub(r'Các phòng thí nghiệm đầu tư tập trung.*?Viện Công nghệ', ' ', text, flags=re.DOTALL)
+    
+    # 4. Loại bỏ các từ khóa thừa khác
+    text = text.replace('Năm', ' ').replace('Ngày', ' ')
+    
+    # 5. Loại bỏ nhiều khoảng trắng thừa
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
+
+def scrape_content_from_url(url: str) -> str:
+    """
+    Sử dụng WebBaseLoader của LangChain để lấy nội dung chính của một trang web.
+    Trả về nội dung dưới dạng văn bản thuần túy.
+    """
+    try:
+        print(f"   -> Đang scrape url: {url}")
+        # WebBaseLoader được thiết kế để tải và phân tích cú pháp HTML
+        loader = WebBaseLoader(url)
+        # Tải tài liệu
+        docs = loader.load()
+        # Nối nội dung của tất cả các tài liệu (thường chỉ có 1)
+        content = " ".join([doc.page_content for doc in docs])
+        # Thay thế nhiều khoảng trắng và dòng mới bằng một khoảng trắng duy nhất
+        cleaned_content = ' '.join(content.split())
+        return cleaned_content
+    except Exception as e:
+        print(f"   -> Lỗi khi scrape url {url}: {e}")
+        return ""
+
 if __name__ == "__main__":
-    print(get_scholarships("2025-08", "all"))
+    print(search_website("các trường, khoa, viện của Đại học Bách Khoa Hà Nội", num_results=2))
