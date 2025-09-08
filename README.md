@@ -13,42 +13,40 @@ Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG
 
 ---
 
-## 🔄 Luồng hoạt động
-1. **Người dùng truy cập frontend** (HTML/CSS/JS).  
-   → Giao diện chat, nhập câu hỏi, nhận kết quả.
-
-2. **Frontend gọi API backend (`main.py`)**:
-   - `/ask` → hỏi đáp RAG.  
-   - `/tts` → Text-to-Speech.  
-   - `/scholarships`, `/jobs`, `/activities` → trả dữ liệu JSON.  
-
-3. **Backend xử lý**:
+## 🔄 Luồng hoạt động backend
+ **Backend xử lý**:
    - Xác định câu hỏi → gọi RAG pipeline (LangChain, Pinecone, Tavily, Google API).  
-   - Trả về câu trả lời (text/audio).  
+   - Trả về câu trả lời (text/audio).
+     
+   <img width="1208" height="443" alt="image" src="https://github.com/user-attachments/assets/e2fdfbd9-018b-450c-8bcc-53e3ba6d78fd" />
 
-4. **Frontend hiển thị kết quả**:
-   - Text → trong khung chat.  
-   - Audio → phát file mp3 từ `/tts`.  
 
 ---
 
 ## 🛠️ Các tool MCP
-Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với ChatGPT/AI agent:
+Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với Agent:
 
-- **ask** → gọi `/ask`, trả lời Q&A bằng RAG.  
-- **tts** → gọi `/tts`, trả về audio từ văn bản.  
-- **scholarships** → lấy danh sách học bổng.  
-- **jobs** → lấy dữ liệu việc làm (lọc theo career/city).  
-- **activities** → lấy thông tin hoạt động ngoại khóa (có thể query theo id).  
+| Tool                    | Chức năng                                                                 |
+|--------------------------|----------------------------------------------------------------------------|
+| **query_classifier**     | Kiểm duyệt câu hỏi → phân loại `safe` hoặc `sensitive_political`.          |
+| **search_student_handbook** | Tra cứu Sổ tay Sinh viên: đời sống, CLB, ký túc xá, học bổng...          |
+| **search_academic_regulations** | Tra cứu Quy chế Đào tạo: tín chỉ, GPA, đăng ký học phần, tốt nghiệp... |
+| **search_law_vietnam**   | Tra cứu văn bản pháp luật: Hiến pháp, Bộ luật, Luật Giáo dục...            |
+| **search_website**       | Tìm kiếm Google & scrape nội dung web (bỏ domain `hust.edu.vn`).           |
+| **get_scholarships**     | Lấy danh sách học bổng, lọc theo trạng thái (open/expired) & thời gian.   |
 
-Các tool MCP định nghĩa cầu nối để assistant/agent có thể trực tiếp gọi API backend.
 
 ---
 
-# Demo:
-https://ducanhdaniel.github.io/sotaysinhvienhust_rag/
+# 🚀 Demo
 
-**Note: chạy https://sotaysinhvienhust-rag.onrender.com để đánh thức server backend trước khi dùng demo. Trả mã 404 là server đang chạy.**
+🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
+
+> ⚠️ **Lưu ý:**  
+> Trước khi mở demo, hãy chạy endpoint backend để “đánh thức” server:  
+> 👉 [https://sotaysinhvienhust-rag.onrender.com](https://sotaysinhvienhust-rag.onrender.com)
+
+---
 
 # Hướng dẫn cài đặt và sử dụng dự án sotaysinhvienhust_rag
 
@@ -436,6 +434,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
