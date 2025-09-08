@@ -1,3 +1,50 @@
+# Sổ tay Sinh viên HUST 
+
+## 📝 Giới thiệu dự án
+**Sổ tay sinh viên HUST (RAG)** là một hệ thống **trợ lý số cho sinh viên Đại học Bách Khoa Hà Nội**.
+
+- Cung cấp thông tin học tập, học bổng, hoạt động ngoại khóa, việc làm.  
+- Tích hợp **Q&A với RAG (Retrieval Augmented Generation)**.  
+- Hỗ trợ **Text-to-Speech (TTS)** để trả lời bằng giọng nói.  
+- Giao diện web tĩnh (HTML/CSS/JS) + backend Python (FastAPI).  
+- Kết nối nhiều nguồn dữ liệu (`job_data`, `audio`, API học bổng/hoạt động).
+
+Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG + MCP + TTS**.
+
+---
+
+## 🔄 Luồng hoạt động
+1. **Người dùng truy cập frontend** (HTML/CSS/JS).  
+   → Giao diện chat, nhập câu hỏi, nhận kết quả.
+
+2. **Frontend gọi API backend (`main.py`)**:
+   - `/ask` → hỏi đáp RAG.  
+   - `/tts` → Text-to-Speech.  
+   - `/scholarships`, `/jobs`, `/activities` → trả dữ liệu JSON.  
+
+3. **Backend xử lý**:
+   - Xác định câu hỏi → gọi RAG pipeline (LangChain, Pinecone, Tavily, Google API).  
+   - Trả về câu trả lời (text/audio).  
+
+4. **Frontend hiển thị kết quả**:
+   - Text → trong khung chat.  
+   - Audio → phát file mp3 từ `/tts`.  
+
+---
+
+## 🛠️ Các tool MCP
+Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với ChatGPT/AI agent:
+
+- **ask** → gọi `/ask`, trả lời Q&A bằng RAG.  
+- **tts** → gọi `/tts`, trả về audio từ văn bản.  
+- **scholarships** → lấy danh sách học bổng.  
+- **jobs** → lấy dữ liệu việc làm (lọc theo career/city).  
+- **activities** → lấy thông tin hoạt động ngoại khóa (có thể query theo id).  
+
+Các tool MCP định nghĩa cầu nối để assistant/agent có thể trực tiếp gọi API backend.
+
+---
+
 # Demo:
 https://ducanhdaniel.github.io/sotaysinhvienhust_rag/
 
@@ -63,7 +110,7 @@ Chạy file chính của dự án bằng lệnh sau:
 
 * Nếu bạn muốn sử dụng dữ liệu riêng của mình, bạn cần chỉnh sửa file tools.py và thay đổi các biến namespace và index_name cho phù hợp với cơ sở dữ liệu Pinecone của bạn.
 
-
+---
 
 # Tài liệu API
 
@@ -389,6 +436,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
