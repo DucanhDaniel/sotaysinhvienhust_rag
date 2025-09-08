@@ -1,6 +1,6 @@
 // Các biến và dữ liệu toàn cục không phụ thuộc vào DOM
 let allScholarships = []; 
-const API_BASE_URL = "https://sotaysinhvienhust-rag.onrender.com/";
+const API_BASE_URL = "http://127.0.0.1:8000";
 const faqQuestions = [
     "Làm thế nào để đạt điểm rèn luyện loại Giỏi?",
     "Thông tin về học bổng ở đâu?",
