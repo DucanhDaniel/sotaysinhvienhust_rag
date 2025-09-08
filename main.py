@@ -2,7 +2,7 @@ from mcp.scholarship import *
 from mcp.rag import *
 from mcp.jobs import *
 from mcp.activities import *
-from utils import preprocess_text
+from mcp.utils import preprocess_text
 import gtts
 from fastapi import FastAPI, HTTPException, Query, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -221,6 +221,9 @@ async def get_activity_details(activity_id: int):
         print(f"Lỗi tại endpoint /activities/{activity_id}: {e}")
         raise HTTPException(status_code=500, detail="Lỗi server nội bộ.")
 
+@app.get("/")
+def check_health():
+    return "Server đang chạy! Truy cập frontend để sử dụng dịch vụ."
 
 import uvicorn
 if __name__ == "__main__":

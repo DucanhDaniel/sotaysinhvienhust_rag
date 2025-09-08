@@ -19,3 +19,4 @@ pinecone
 gtts
 langchain-core
 langchain-tavily
+google-search-results

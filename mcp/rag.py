@@ -112,6 +112,7 @@ QUY TẮC TUYỆT ĐỐI:
 1.  Không nói về quá trình làm việc: Không bao giờ nói những câu như "Tôi sẽ tìm kiếm...", "Tôi không tìm thấy thông tin, để tôi thử cách khác...". Chỉ trả lời khi đã có kết quả cuối cùng.
 2.  Ưu tiên dữ liệu nội bộ: Ưu tiên các công cụ nội bộ (search_student_handbook, search_academic_regulations, search_law_vietnam) trước
 3.  Bắt buộc dùng công cụ dự phòng: Nếu công cụ nội bộ trả về kết quả rỗng hoặc không đủ thông tin, BẮT BUỘC phải gọi `search_website` ngay lập tức trong cùng một chu trình. KHÔNG ĐƯỢC trả lời người dùng khi chưa thử `search_website`.
+4.  Cố gắng để câu trả lời ngắn gọn, đủ ý nhất có thể.
 
 ĐỊNH DẠNG TRẢ LỜI (QUAN TRỌNG):
     1. Súc tích cho TTS: Vì câu trả lời sẽ được đọc thành tiếng, hãy trả lời ngắn gọn, trực tiếp, đi thẳng vào vấn đề. Sử dụng câu văn đơn giản.
@@ -124,7 +125,7 @@ QUY TRÌNH SUY NGHĨ BẮT BUỘC:
             Nếu câu hỏi mang tính chung chung về "chính sách học bổng", hãy gọi cả search_student_handbook và get_scholarships.
         2.2 Đối với câu hỏi về HỌC VỤ: Dùng search_academic_regulations (ví dụ: điểm số, tín chỉ, tốt nghiệp).
         2.3 Đối với câu hỏi về ĐỜI SỐNG SINH VIÊN: Dùng search_student_handbook (ví dụ: KTX, xe bus, CLB).
-        2.4 Đối với câu hỏi/giới thiệu về các Trường, khoa, viện: Sử dụng search_student_handbook để lấy thông tin.
+        2.4 Đối với câu hỏi/giới thiệu về các Trường, khoa, viện: Sử dụng search_student_handbook để lấy thông tin. NẾU KHÔNG ĐỦ THÔNG TIN THÌ SỬ DỤNG search_website!
         2.5 Đối với câu hỏi liên quan đến PHÁP LUẬT VIỆT NAM: Dùng search_law_vietnam. (ví dụ: Hiến pháp, Bộ luật, dân sự, hình sự, lao động)
         2.6 Đối với câu hỏi cần thông tin thời sự hoặc ngoài cơ sở dữ liệu, ngoài các mô tả các tool trên: Dùng search_website.
     3.  **Thực thi & Đánh giá:**
@@ -162,27 +163,42 @@ MÔ TẢ CÁC CÔNG CỤ:
 -   **Câu trả lời cuối cùng cho user:** "Hiệu trưởng hiện tại của Trường Cơ khí là PGS. TS. Trương Hoành Sơn."    
 """
 
-def get_response(question: str, message_history: List[BaseMessage]) -> Tuple[str, List[BaseMessage]]:
+# Tối đa 4 cặp Query - Response lịch sử được dùng để đưa vào prompt
+def get_response(question: str, message_history: List[BaseMessage], max_history_length: int = 4) -> Tuple[str, List[BaseMessage]]:
     """
-    Xử lý một câu hỏi, có tính đến lịch sử hội thoại.
+    Xử lý một câu hỏi, có tính đến lịch sử hội thoại, giới hạn độ dài lịch sử.
+    
+    Args:
+        question (str): Câu hỏi hiện tại của người dùng.
+        message_history (List[BaseMessage]): Lịch sử tin nhắn.
+        max_history_length (int): Số cặp tin nhắn (user-bot) tối đa được lưu.
+        
+    Returns:
+        Tuple[str, List[BaseMessage]]: Câu trả lời cuối cùng và lịch sử đã cập nhật.
     """
+    
+    # Giới hạn độ dài của history
+    # Mỗi cặp user-bot là 2 tin nhắn, nên max_history_length * 2
+    limited_history = message_history[-max_history_length*2:]
+    
     # Tạo danh sách tin nhắn cho lần chạy này
     messages_for_run = [
-        SystemMessage(content=system_prompt), # SỬA LỖI: Dùng SystemMessage và đúng tên biến
-        *message_history,
+        SystemMessage(content=system_prompt),
+        *limited_history, # SỬA LỖI: Dùng limited_history thay vì message_history
         HumanMessage(content=question)
     ]
 
-    # Chạy graph với toàn bộ lịch sử
+    # Chạy graph với lịch sử đã giới hạn
     final_state = graph.invoke({"messages": messages_for_run})
     
     # Câu trả lời của bot là tin nhắn cuối cùng trong state
     final_answer = final_state["messages"][-1].content
     
     # Lịch sử mới bao gồm câu hỏi của user và câu trả lời của bot
+    # Cập nhật message_history gốc thay vì limited_history
     updated_history = message_history + [
         HumanMessage(content=question),
-        AIMessage(content=final_answer) # Có thể dùng AIMessage hoặc BaseMessage từ final_state
+        AIMessage(content=final_answer)
     ]
     
     return final_answer, updated_history

@@ -85,6 +85,3 @@ def preprocess_text(text: str) -> str:
     print(text)
     return re.sub(r'\s+', ' ', text).strip()
 
-# print(preprocess_text("""
-# Đại học Bách khoa Hà Nội được thành lập ngày 6/3/1956. Trường đã chuyển thành Đại học Bách khoa Hà Nội theo Quyết định số 1512/QĐ-TTg ngày 02/12/2022 của Thủ tướng Chính phủ. Hiện tại, Đại học Bách khoa Hà Nội có hơn 200.000 cựu sinh viên, với cơ cấu gồm 10 Trường & Khoa đào tạo, 03 Khoa đào tạo cơ bản, 06 Viện/Trung tâm nghiên cứu và 12 Phòng nghiên cứu trọng điểm.
-# """))
