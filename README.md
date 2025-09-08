@@ -1,7 +1,7 @@
 # Demo:
 https://ducanhdaniel.github.io/sotaysinhvienhust_rag/
 
-** Note: chạy https://sotaysinhvienhust-rag.onrender.com để đánh thức server backend trước khi dùng demo. **
+**Note: chạy https://sotaysinhvienhust-rag.onrender.com để đánh thức server backend trước khi dùng demo.**
 
 # Hướng dẫn cài đặt và sử dụng dự án sotaysinhvienhust_rag
 
@@ -389,6 +389,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
