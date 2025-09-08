@@ -1,6 +1,5 @@
 langchain 
 pinecone-client 
-sentence-transformers 
 pypdf 
 langchain-pinecone 
 langchain-community
