@@ -129,6 +129,7 @@ Dự án sử dụng uv để quản lý các gói thư viện Python. Bạn c�
   PINECONE_API_KEY=
   LANGCHAIN_API_KEY=
   TAVILY_API_KEY=
+  SERPAPI_KEY=
 ```
 
 ### 3. Cách chạy
@@ -482,6 +483,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
