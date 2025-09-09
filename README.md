@@ -1,5 +1,14 @@
 # Sổ tay Sinh viên HUST 
 
+## 🚀 Demo
+
+🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
+
+> ⚠️ **Lưu ý:**  
+> Trước khi mở demo, hãy chạy endpoint backend để “đánh thức” server:  
+> 👉 [https://sotaysinhvienhust-rag.onrender.com](https://sotaysinhvienhust-rag.onrender.com)
+
+---
 ## 📝 Giới thiệu dự án
 **Sổ tay sinh viên HUST (RAG)** là một hệ thống **trợ lý số cho sinh viên Đại học Bách Khoa Hà Nội**.
 
@@ -49,21 +58,16 @@ Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG
 └── run.py                      # Script để khởi động server
 ```
 
-- Giải thích các thành phần:
-  + run.py: File duy nhất bạn cần chạy (python run.py) để khởi động máy chủ web Uvicorn.
+### Giải thích các thành phần
 
-  + app/: Thư mục chính chứa toàn bộ mã nguồn của ứng dụng.
+- **`run.py`**: Đây là file duy nhất cần chạy (`python run.py`) để khởi động máy chủ web Uvicorn.
 
-  + main.py: Khởi tạo ứng dụng FastAPI, cấu hình middleware (như CORS), và "gắn" tất cả các router từ api/routers vào.
-
-  + api/routers/: Mỗi file trong này định nghĩa một nhóm các endpoint liên quan. Ví dụ, jobs.py chứa các endpoint /jobs, /jobs/careers, etc. Tầng này chỉ chịu trách nhiệm nhận yêu cầu và trả về phản hồi, không chứa logic nghiệp vụ.
-
-  + services/: Mỗi service chứa logic xử lý cho một chức năng cụ thể (ví dụ: job_service.py chứa code crawl và lọc dữ liệu việc làm). Tầng này được gọi bởi các router.
-
-  + models/schemas.py: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
-
-  + rag/: Một module độc lập chứa tất cả những gì liên quan đến agent AI, bao gồm việc xây dựng graph (agent.py) và định nghĩa các công cụ (tools.py).
-
+- **`app/`**: **Thư mục ứng dụng chính**. Chứa toàn bộ mã nguồn của ứng dụng:
+    - **`main.py`**: Khởi tạo đối tượng FastAPI, cấu hình middleware, gắn router từ `api/routers`.
+    - **`api/routers/`**: Định nghĩa các endpoint. Tầng này nhận yêu cầu HTTP và trả về phản hồi.
+    - **`services/`**: Chứa logic xử lý cho từng chức năng (ví dụ: crawl dữ liệu, gọi RAG agent, v.v.).
+    - **`models/schemas.py`**: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
+    - **`rag/`**: Chứa tất cả logic liên quan đến agent AI, bao gồm việc xây dựng graph và định nghĩa các công cụ.
 ---
 
 ## 🔄 Luồng hoạt động backend
@@ -91,19 +95,41 @@ Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với Ag
 
 ---
 
-# 🚀 Demo
-
-🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
-
-> ⚠️ **Lưu ý:**  
-> Trước khi mở demo, hãy chạy endpoint backend để “đánh thức” server:  
-> 👉 [https://sotaysinhvienhust-rag.onrender.com](https://sotaysinhvienhust-rag.onrender.com)
-
----
 
 # Hướng dẫn cài đặt và sử dụng dự án sotaysinhvienhust_rag
 
 Đây là hướng dẫn chi tiết để bạn có thể cài đặt, thiết lập và chạy dự án này trên máy tính của mình.
+
+## 🐳 Triển khai với Docker
+
+Dự án này có thể được build và chạy dưới dạng một Docker container, giúp đóng gói toàn bộ ứng dụng và các dependencies của nó một cách nhất quán trên mọi môi trường.
+
+### 1. Build Docker Image:
+
+Mở terminal tại thư mục gốc của dự án và chạy lệnh sau.
+
+```
+docker build -t hust-ai-assistant .
+```
+
+### 2. **Chạy Docker Container:**
+
+Sau khi build thành công, chạy container từ image vừa tạo.
+
+```
+docker run -p 8000:8000 --env-file .env hust-ai-assistant
+```
+
+### 3. **Kiểm tra ứng dụng:**
+Container hiện đang chạy trong nền. Mở trình duyệt và truy cập các địa chỉ sau:
+
+* **Trang chủ API**: [http://localhost:8000/](http://localhost:8000/)
+
+* **Tài liệu API (Swagger UI)**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+.
+
+## 🚀 Cài đặt thủ công
 
 ### 1. Yêu cầu
 
@@ -134,6 +160,7 @@ Dự án sử dụng uv để quản lý các gói thư viện Python. Bạn c�
   PINECONE_API_KEY=
   LANGCHAIN_API_KEY=
   TAVILY_API_KEY=
+  SERPAPI_KEY=
 ```
 
 ### 3. Cách chạy
@@ -151,7 +178,7 @@ Chạy file chính của dự án bằng lệnh sau:
 
 3. Thiết lập host TTS model trên colab (optional):
    
-   - Chạy notebook/StyleTTS2_lite_vi_(2s).ipynb trên Google Colab, dán link Ngrok thu được ở cuối file vào EXTERNAL_TTS_URL trong main.py.
+   - Chạy `notebook/StyleTTS2_lite_vi_(2s).ipynb` trên Google Colab, dán link Ngrok thu được ở cuối file vào **EXTERNAL_TTS_URL** trong `app/services/tts_service.py`.
 
    - App vẫn sẽ có tính năng giọng nói, nhưng khi chạy phần này sẽ có tùy chọn giọng nói đa dạng và chất lượng tốt hơn.
 
@@ -487,6 +514,11 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
+
+
+
+
 
 
 
