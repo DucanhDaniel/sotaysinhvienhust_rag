@@ -55,7 +55,7 @@ Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG
 
 - **`app/`**: **Thư mục ứng dụng chính**. Chứa toàn bộ mã nguồn của ứng dụng:
     - **`main.py`**: Khởi tạo đối tượng FastAPI, cấu hình middleware, gắn router từ `api/routers`.
-    - **`api/routers/`**: Định nghĩa một nhóm các endpoint. Tầng này chịu trách nhiệm nhận yêu cầu HTTP và trả về phản hồi.
+    - **`api/routers/`**: Định nghĩa các endpoint. Tầng này nhận yêu cầu HTTP và trả về phản hồi.
     - **`services/`**: Chứa logic xử lý cho từng chức năng (ví dụ: crawl dữ liệu, gọi RAG agent, v.v.).
     - **`models/schemas.py`**: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
     - **`rag/`**: Chứa tất cả logic liên quan đến agent AI, bao gồm việc xây dựng graph và định nghĩa các công cụ.
@@ -146,7 +146,7 @@ Chạy file chính của dự án bằng lệnh sau:
 
 3. Thiết lập host TTS model trên colab (optional):
    
-   - Chạy notebook/StyleTTS2_lite_vi_(2s).ipynb trên Google Colab, dán link Ngrok thu được ở cuối file vào EXTERNAL_TTS_URL trong main.py.
+   - Chạy `notebook/StyleTTS2_lite_vi_(2s).ipynb` trên Google Colab, dán link Ngrok thu được ở cuối file vào **EXTERNAL_TTS_URL** trong `app/services/tts_service.py`.
 
    - App vẫn sẽ có tính năng giọng nói, nhưng khi chạy phần này sẽ có tùy chọn giọng nói đa dạng và chất lượng tốt hơn.
 
@@ -482,6 +482,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
