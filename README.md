@@ -49,21 +49,16 @@ Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG
 └── run.py                      # Script để khởi động server
 ```
 
-- Giải thích các thành phần:
-  + run.py: File duy nhất bạn cần chạy (python run.py) để khởi động máy chủ web Uvicorn.
+### Giải thích các thành phần
 
-  + app/: Thư mục chính chứa toàn bộ mã nguồn của ứng dụng.
+- **`run.py`**: Đây là file duy nhất cần chạy (`python run.py`) để khởi động máy chủ web Uvicorn.
 
-  + main.py: Khởi tạo ứng dụng FastAPI, cấu hình middleware (như CORS), và "gắn" tất cả các router từ api/routers vào.
-
-  + api/routers/: Mỗi file trong này định nghĩa một nhóm các endpoint liên quan. Ví dụ, jobs.py chứa các endpoint /jobs, /jobs/careers, etc. Tầng này chỉ chịu trách nhiệm nhận yêu cầu và trả về phản hồi, không chứa logic nghiệp vụ.
-
-  + services/: Mỗi service chứa logic xử lý cho một chức năng cụ thể (ví dụ: job_service.py chứa code crawl và lọc dữ liệu việc làm). Tầng này được gọi bởi các router.
-
-  + models/schemas.py: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
-
-  + rag/: Một module độc lập chứa tất cả những gì liên quan đến agent AI, bao gồm việc xây dựng graph (agent.py) và định nghĩa các công cụ (tools.py).
-
+- **`app/`**: **Thư mục ứng dụng chính**. Chứa toàn bộ mã nguồn của ứng dụng:
+    - **`main.py`**: Khởi tạo đối tượng FastAPI, cấu hình middleware, gắn router từ `api/routers`.
+    - **`api/routers/`**: Định nghĩa một nhóm các endpoint. Tầng này chịu trách nhiệm nhận yêu cầu HTTP và trả về phản hồi.
+    - **`services/`**: Chứa logic xử lý cho từng chức năng (ví dụ: crawl dữ liệu, gọi RAG agent, v.v.).
+    - **`models/schemas.py`**: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
+    - **`rag/`**: Chứa tất cả logic liên quan đến agent AI, bao gồm việc xây dựng graph và định nghĩa các công cụ.
 ---
 
 ## 🔄 Luồng hoạt động backend
@@ -487,6 +482,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
