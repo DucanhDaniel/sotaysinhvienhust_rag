@@ -1,6 +1,5 @@
 # Sổ tay Sinh viên HUST 
 
----
 ## 🚀 Demo
 
 🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
@@ -100,6 +99,37 @@ Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với Ag
 # Hướng dẫn cài đặt và sử dụng dự án sotaysinhvienhust_rag
 
 Đây là hướng dẫn chi tiết để bạn có thể cài đặt, thiết lập và chạy dự án này trên máy tính của mình.
+
+## 🐳 Triển khai với Docker
+
+Dự án này có thể được build và chạy dưới dạng một Docker container, giúp đóng gói toàn bộ ứng dụng và các dependencies của nó một cách nhất quán trên mọi môi trường.
+
+### 1. Build Docker Image:
+
+Mở terminal tại thư mục gốc của dự án và chạy lệnh sau.
+
+```
+docker build -t hust-ai-assistant .
+```
+
+### 2. **Chạy Docker Container:**
+
+Sau khi build thành công, chạy container từ image vừa tạo.
+
+```
+docker run -p 8000:8000 --env-file .env hust-ai-assistant
+```
+
+### 3. **Kiểm tra ứng dụng:**
+Container hiện đang chạy trong nền. Mở trình duyệt và truy cập các địa chỉ sau:
+
+* **Trang chủ API**: [http://localhost:8000/](http://localhost:8000/)
+
+* **Tài liệu API (Swagger UI)**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+.
+
+## 🚀 Cài đặt thủ công
 
 ### 1. Yêu cầu
 
@@ -484,6 +514,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
