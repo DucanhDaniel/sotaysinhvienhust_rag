@@ -1,10 +1,9 @@
-# mcp/activities.py
-
 import requests
-import json
 import time
 from bs4 import BeautifulSoup
 from typing import List, Dict, Optional
+import re
+
 
 def html_to_text(html_string: str) -> str:
     """
@@ -145,7 +144,3 @@ def fetch_activity_details(activity_id: int) -> Optional[Dict]:
         print(f"Lỗi khi crawl chi tiết hoạt động {activity_id}: {e}")
         return None
     
-if __name__ == "__main__":
-    res = fetch_activity_details(14505)
-    print(res)
-    print(type(res))

@@ -1,5 +1,5 @@
 langchain 
-pinecone-client 
+pinecone
 pypdf 
 langchain-pinecone 
 langchain-community

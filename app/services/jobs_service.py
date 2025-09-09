@@ -1,10 +1,8 @@
 import requests
-import json
 import time
 from bs4 import BeautifulSoup
 from typing import List, Dict, Optional
 
-# --- Các hàm xử lý và làm sạch dữ liệu (giữ nguyên) ---
 
 # Dữ liệu tĩnh về chuyên ngành và tỉnh thành
 CAREER_MAP = {
@@ -168,6 +166,3 @@ def fetch_jobs(
 
     print(f"Sau khi lọc, còn lại {len(filtered_results)} kết quả.")
     return filtered_results
-
-if __name__ == "__main__":
-    print(get_raw_jobs_from_page(1, 1))

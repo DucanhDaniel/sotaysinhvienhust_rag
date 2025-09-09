@@ -1,13 +1,12 @@
-from .scholarship import *
+from app.services.scholarships_service import crawl_all_scholarships, Scholarship
 from langchain_community.document_loaders import WebBaseLoader
-
+import re
 import os
 from datetime import datetime, timedelta
-from typing import List, Optional
+from typing import List
 import calendar
 from typing import Dict, List
 from langchain_core.tools import tool
-# from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_tavily import TavilySearch
 from serpapi import SerpApiClient
 
