@@ -1,5 +1,15 @@
 # Sổ tay Sinh viên HUST 
 
+---
+## 🚀 Demo
+
+🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
+
+> ⚠️ **Lưu ý:**  
+> Trước khi mở demo, hãy chạy endpoint backend để “đánh thức” server:  
+> 👉 [https://sotaysinhvienhust-rag.onrender.com](https://sotaysinhvienhust-rag.onrender.com)
+
+---
 ## 📝 Giới thiệu dự án
 **Sổ tay sinh viên HUST (RAG)** là một hệ thống **trợ lý số cho sinh viên Đại học Bách Khoa Hà Nội**.
 
@@ -86,15 +96,6 @@ Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với Ag
 
 ---
 
-# 🚀 Demo
-
-🔗 **[Truy cập demo tại đây](https://ducanhdaniel.github.io/sotaysinhvienhust_rag/)**
-
-> ⚠️ **Lưu ý:**  
-> Trước khi mở demo, hãy chạy endpoint backend để “đánh thức” server:  
-> 👉 [https://sotaysinhvienhust-rag.onrender.com](https://sotaysinhvienhust-rag.onrender.com)
-
----
 
 # Hướng dẫn cài đặt và sử dụng dự án sotaysinhvienhust_rag
 
@@ -483,6 +484,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
