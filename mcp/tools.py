@@ -54,7 +54,7 @@ def query_classifier(query: str) -> str:
     system_prompt = f"""
     Bạn là một chuyên gia kiểm duyệt nội dung cho một chatbot của trường đại học.
     Nhiệm vụ của bạn là phân loại câu hỏi của sinh viên vào MỘT trong hai danh mục sau đây:
-    1. safe: Các câu hỏi liên quan trực tiếp đến đời sống, học tập, quy chế, học bổng, chính sách tại Đại học Bách Khoa Hà Nội.
+    1. safe: Các câu hỏi liên quan trực tiếp đến đời sống, học tập, quy chế, học bổng, chính sách tại Đại học Bách Khoa Hà Nội và các nội dung liên quan đến Pháp luật, hiến pháp Việt Nam.
     2. sensitive_political: Các câu hỏi chứa nội dung về chính trị, tôn giáo, các vấn đề xã hội nhạy cảm, bạo lực, thù ghét, hoặc không phù hợp với môi trường giáo dục.
 
     Hãy chỉ trả về TÊN của danh mục (ví dụ: "safe" hoặc "sensitive_political"), không giải thích gì thêm.
