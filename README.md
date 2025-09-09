@@ -13,6 +13,59 @@ Dự án vừa hỗ trợ sinh viên, vừa là ví dụ demo **ứng dụng RAG
 
 ---
 
+## 🏛️ Cấu trúc Dự án
+**Dự án được tổ chức theo kiến trúc phân lớp (layered architecture) để đảm bảo tính module hóa, dễ bảo trì và mở rộng.**
+
+```
+.
+├── app/
+│   ├── api/
+│   │   └── routers/            # Tầng API: Xử lý request/response HTTP
+│   │       ├── chat.py
+│   │       ├── tts.py
+│   │       ├── jobs.py
+│   │       ├── activities.py
+│   │       └── scholarship.py
+│   │
+│   ├── services/               # Tầng nghiệp vụ: Chứa logic chính của ứng dụng
+│   │   ├── rag_service.py
+│   │   ├── tts_service.py
+│   │   ├── job_service.py
+│   │   ├── activity_service.py
+│   │   └── scholarship_service.py
+│   │
+│   ├── models/                 # Tầng dữ liệu: Định nghĩa cấu trúc dữ liệu
+│   │   └── schemas.py
+│   │
+│   │
+│   ├── rag/                    # Module RAG (Retrieval-Augmented Generation) độc lập
+│   │   ├── agent.py
+│   │   └── tools.py
+│   │
+│   └── main.py                 # Điểm khởi tạo ứng dụng FastAPI
+│
+├── .env                        # Biến môi trường (API keys, etc.)
+├── requirements.txt            # Các gói Python cần thiết
+└── run.py                      # Script để khởi động server
+```
+
+- Giải thích các thành phần:
+  + run.py: File duy nhất bạn cần chạy (python run.py) để khởi động máy chủ web Uvicorn.
+
+  + app/: Thư mục chính chứa toàn bộ mã nguồn của ứng dụng.
+
+  + main.py: Khởi tạo ứng dụng FastAPI, cấu hình middleware (như CORS), và "gắn" tất cả các router từ api/routers vào.
+
+  + api/routers/: Mỗi file trong này định nghĩa một nhóm các endpoint liên quan. Ví dụ, jobs.py chứa các endpoint /jobs, /jobs/careers, etc. Tầng này chỉ chịu trách nhiệm nhận yêu cầu và trả về phản hồi, không chứa logic nghiệp vụ.
+
+  + services/: Mỗi service chứa logic xử lý cho một chức năng cụ thể (ví dụ: job_service.py chứa code crawl và lọc dữ liệu việc làm). Tầng này được gọi bởi các router.
+
+  + models/schemas.py: Định nghĩa các class Pydantic để xác thực dữ liệu đầu vào và định dạng dữ liệu đầu ra.
+
+  + rag/: Một module độc lập chứa tất cả những gì liên quan đến agent AI, bao gồm việc xây dựng graph (agent.py) và định nghĩa các công cụ (tools.py).
+
+---
+
 ## 🔄 Luồng hoạt động backend
  **Backend xử lý**:
    - Xác định câu hỏi → gọi RAG pipeline (LangChain, Pinecone, Tavily, Google API).  
