@@ -102,22 +102,22 @@ Repo có tích hợp **Model Context Protocol (MCP)** để kết nối với Ag
 
 ## 🐳 Triển khai với Docker
 
-Dự án này có thể được build và chạy dưới dạng một Docker container, giúp đóng gói toàn bộ ứng dụng và các dependencies của nó một cách nhất quán trên mọi môi trường.
+Dự án này có thể được pull từ docker hub và chạy như sau:
 
-### 1. Build Docker Image:
+### 1. Pull Docker Image:
 
-Mở terminal tại thư mục gốc của dự án và chạy lệnh sau.
+Mở terminal tại một folder chứa file `.env` và chạy lệnh sau:
 
 ```
-docker build -t hust-ai-assistant .
+docker pull phamducanh2k5/hust-ai-assistant
 ```
 
 ### 2. **Chạy Docker Container:**
 
-Sau khi build thành công, chạy container từ image vừa tạo.
+Sau khi pull thành công, chạy container từ image.
 
 ```
-docker run -p 8000:8000 --env-file .env hust-ai-assistant
+docker run -p 8000:8000 --env-file .env phamducanh2k5/hust-ai-assistant
 ```
 
 ### 3. **Kiểm tra ứng dụng:**
@@ -514,6 +514,7 @@ Dưới đây là tài liệu cho các endpoint API của ứng dụng, bao gồ
     }
     
     ```
+
 
 
 
